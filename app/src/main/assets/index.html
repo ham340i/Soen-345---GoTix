@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoTix Ticket App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <div class="nav-brand">GoTix</div>
+        <div class="nav-links">
+            <button onclick="showSection('events-section')">Events</button>
+        </div>
+    </nav>
+
+    <main>
+        <section id="events-section">
+            <h2>Upcoming Events</h2>
+            <div class="search-bar">
+                <input type="date" id="search-date">
+                <input type="text" id="search-location" placeholder="Location">
+                <select id="search-category">
+                    <option value="All">All Categories</option>
+                    <option value="Movie">Movie</option>
+                    <option value="Concert">Concert</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Travel">Travel</option>
+                </select>
+                <button onclick="searchEvents()">Search</button>
+            </div>
+            <div id="events-list" class="card-grid">
+                <!-- Events will be loaded here -->
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
