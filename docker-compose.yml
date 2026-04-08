@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: gotix-db
+    environment:
+      POSTGRES_DB: ticketdb
+      POSTGRES_USER: ticketuser
+      POSTGRES_PASSWORD: ticketpass
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U ticketuser -d ticketdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: { context: ./backend, dockerfile: Dockerfile }
+    container_name: gotix-backend
+    ports: ["8080:8080"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ticketdb
+      SPRING_DATASOURCE_USERNAME: ticketuser
+      SPRING_DATASOURCE_PASSWORD: ticketpass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      JWT_SECRET: gotix-secret-key-must-be-at-least-32-characters
+      JWT_EXPIRATION: 86400000
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL","curl -f http://localhost:8080/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  frontend:
+    build: { context: ./frontend, dockerfile: Dockerfile }
+    container_name: gotix-frontend
+    ports: ["3000:80"]
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  pgdata:
