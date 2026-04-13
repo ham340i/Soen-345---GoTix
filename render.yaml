@@ -1,0 +1,77 @@
+services:
+  - type: web
+    name: gotix-backend
+    runtime: docker
+    plan: starter
+    region: ohio
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: gotix-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: gotix-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: gotix-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: gotix-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: gotix-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: "86400000"
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update
+      - key: SPRING_JPA_DATABASE_PLATFORM
+        value: org.hibernate.dialect.PostgreSQLDialect
+      - key: SPRING_MAIL_HOST
+        sync: false
+      - key: SPRING_MAIL_PORT
+        sync: false
+      - key: SPRING_MAIL_USERNAME
+        sync: false
+      - key: SPRING_MAIL_PASSWORD
+        sync: false
+      - key: SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH
+        sync: false
+      - key: SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE
+        sync: false
+      - key: APP_MAIL_FROM
+        sync: false
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_FROM_NUMBER
+        sync: false
+
+  - type: web
+    name: gotix-frontend
+    runtime: docker
+    plan: free
+    region: ohio
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    envVars:
+      - key: BACKEND_HOSTPORT
+        fromService:
+          type: web
+          name: gotix-backend
+          property: hostport
+
+databases:
+  - name: gotix-db
+    plan: free
+    region: ohio

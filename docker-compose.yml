@@ -64,6 +64,8 @@ services:
     build: { context: ./frontend, dockerfile: Dockerfile }
     container_name: gotix-frontend
     expose: ["80"]
+    environment:
+      BACKEND_HOSTPORT: gotix-backend:8080
     depends_on:
       backend:
         condition: service_started

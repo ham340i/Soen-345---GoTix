@@ -74,6 +74,28 @@ npm install
 npm start
 ```
 
+### Option C — Render Deployment
+
+This repo includes a [render.yaml](/Users/ahmadhabbal/Desktop/GoTix%202/render.yaml:1) Blueprint for deploying:
+
+- `gotix-frontend` as a Docker web service
+- `gotix-backend` as a Docker web service
+- `gotix-db` as a managed Render Postgres database
+
+Deploy steps:
+
+1. Push the repo to GitHub.
+2. In Render, choose `New` -> `Blueprint`.
+3. Connect this GitHub repo and select the default branch.
+4. During setup, provide secret values for mail/SMS env vars if you want production email or Twilio.
+5. After deploy, open the `gotix-frontend` service URL.
+
+Notes:
+
+- The frontend proxies `/api` requests to the backend over Render's private network.
+- The backend listens on Render's assigned `PORT`.
+- If you skip mail credentials, the app still runs, but real email delivery will be disabled.
+
 ---
 
 ## Demo Credentials
