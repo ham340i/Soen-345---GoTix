@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example.gotix</groupId>
+    <artifactId>gotix-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>GoTix</name>
+
+    <modules>
+        <module>app</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+
+        <android.version>4.1.1.4</android.version>
+        <android.platform>36</android.platform>
+        <android-maven-plugin.version>4.6.0</android-maven-plugin.version>
+
+        <androidx.core.version>1.13.1</androidx.core.version>
+        <androidx.appcompat.version>1.7.0</androidx.appcompat.version>
+        <material.version>1.12.0</material.version>
+        <constraintlayout.version>2.2.0</constraintlayout.version>
+        <nanohttpd.version>2.3.1</nanohttpd.version>
+        <gson.version>2.10.1</gson.version>
+        <junit.jupiter.version>5.10.0</junit.jupiter.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>google</id>
+            <url>https://maven.google.com</url>
+        </repository>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>androidx.core</groupId>
+                <artifactId>core</artifactId>
+                <version>${androidx.core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>androidx.appcompat</groupId>
+                <artifactId>appcompat</artifactId>
+                <version>${androidx.appcompat.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.android.material</groupId>
+                <artifactId>material</artifactId>
+                <version>${material.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>androidx.constraintlayout</groupId>
+                <artifactId>constraintlayout</artifactId>
+                <version>${constraintlayout.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.nanohttpd</groupId>
+                <artifactId>nanohttpd</artifactId>
+                <version>${nanohttpd.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

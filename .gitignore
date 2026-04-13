@@ -1,0 +1,14 @@
+backend/target/
+backend/.idea/
+backend/*.iml
+frontend/node_modules/
+frontend/build/
+frontend/.env.local
+.gradle/
+build/
+app/build/
+.vscode/
+.env
+.DS_Store
+*.log
+pgdata/

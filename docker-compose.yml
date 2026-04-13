@@ -1,0 +1,72 @@
+services:
+  proxy:
+    image: nginx:alpine
+    container_name: gotix-proxy
+    ports: ["80:80"]
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - backend
+      - mailhog
+    healthcheck:
+      test: ["CMD-SHELL","wget -q -O- http://localhost || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db:
+    image: postgres:15-alpine
+    container_name: gotix-db
+    environment:
+      POSTGRES_DB: ticketdb
+      POSTGRES_USER: ticketuser
+      POSTGRES_PASSWORD: ticketpass
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U ticketuser -d ticketdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: gotix-mailhog
+    ports: ["1025:1025", "8025:8025"]
+
+  backend:
+    build: { context: ./backend, dockerfile: Dockerfile }
+    container_name: gotix-backend
+    expose: ["8080"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/ticketdb
+      SPRING_DATASOURCE_USERNAME: ticketuser
+      SPRING_DATASOURCE_PASSWORD: ticketpass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      JWT_SECRET: gotix-secret-key-must-be-at-least-32-characters
+      JWT_EXPIRATION: 86400000
+      SPRING_MAIL_HOST: ${SPRING_MAIL_HOST:-mailhog}
+      SPRING_MAIL_PORT: ${SPRING_MAIL_PORT:-1025}
+      SPRING_MAIL_USERNAME: ${SPRING_MAIL_USERNAME:-}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD:-}
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH:-false}
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: ${SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE:-false}
+      APP_MAIL_FROM: ${APP_MAIL_FROM:-noreply@gotix.local}
+    depends_on:
+      db:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+
+  frontend:
+    build: { context: ./frontend, dockerfile: Dockerfile }
+    container_name: gotix-frontend
+    expose: ["80"]
+    depends_on:
+      backend:
+        condition: service_started
+
+volumes:
+  pgdata:
